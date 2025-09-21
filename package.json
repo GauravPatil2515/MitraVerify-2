@@ -7,10 +7,11 @@
     "mitraverify-frontend"
   ],
   "scripts": {
-    "build": "cd mitraverify-frontend && npm install --legacy-peer-deps --no-package-lock && npm run build",
+    "build": "chmod +x build-with-npm.sh && ./build-with-npm.sh",
+    "build:windows": ".\\build-with-npm.bat",
     "dev": "cd mitraverify-frontend && npm run dev",
     "start": "cd mitraverify-frontend && npm start",
-    "render-build": "chmod +x render-build.sh && ./render-build.sh"
+    "render-build": "chmod +x build-with-npm.sh && ./build-with-npm.sh"
   },
   "engines": {
     "node": ">=18.0.0",

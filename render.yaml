@@ -5,7 +5,7 @@ services:
     env: static
     region: oregon
     plan: free
-    buildCommand: cd mitraverify-frontend && npm install --legacy-peer-deps --no-package-lock && npm run build
+    buildCommand: chmod +x build-with-npm.sh && ./build-with-npm.sh
     staticPublishPath: mitraverify-frontend/out
     pullRequestPreviewsEnabled: true
     rootDir: mitraverify-frontend
@@ -18,7 +18,7 @@ services:
         destination: /index.html
     envVars:
       - key: NODE_VERSION
-        value: "18.17.0"
+        value: "20.17.0"
       - key: NPM_CONFIG_LEGACY_PEER_DEPS
         value: "true"
       - key: BUILD_COMMAND

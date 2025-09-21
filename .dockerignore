@@ -1,3 +1,8 @@
-# Ignore everything for Netlify (we want Node.js builds, not Docker)
-*
+# Prevent Docker builds - force Node.js builds on Netlify
+**
 !mitraverify-frontend/
+MitraVerify-Backend/
+*.dockerfile
+Dockerfile*
+docker-compose*
+.dockerignore

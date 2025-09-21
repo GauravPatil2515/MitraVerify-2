@@ -1,0 +1,24 @@
+{
+  "name": "mitraverify-monorepo",
+  "version": "2.0.0",
+  "description": "MitraVerify 2.0 - AI-powered misinformation detection platform",
+  "private": true,
+  "workspaces": [
+    "mitraverify-frontend"
+  ],
+  "scripts": {
+    "build": "cd mitraverify-frontend && npm ci && npm run build",
+    "dev": "cd mitraverify-frontend && npm run dev",
+    "start": "cd mitraverify-frontend && npm start"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GauravPatil2515/MitraVerify-2.git"
+  },
+  "author": "Gaurav Patil",
+  "license": "MIT"
+}

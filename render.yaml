@@ -5,7 +5,7 @@ services:
     env: static
     region: oregon
     plan: free
-    buildCommand: cd mitraverify-frontend && npm install --legacy-peer-deps && npm run build
+    buildCommand: cd mitraverify-frontend && npm install --legacy-peer-deps --no-package-lock && npm run build
     staticPublishPath: mitraverify-frontend/out
     pullRequestPreviewsEnabled: true
     rootDir: mitraverify-frontend
@@ -23,6 +23,10 @@ services:
         value: "true"
       - key: BUILD_COMMAND
         value: "npm install --legacy-peer-deps && npm run build"
+      - key: DISABLE_BUN
+        value: "true"
+      - key: USE_NPM
+        value: "true"
     headers:
       - path: /*
         name: X-Frame-Options

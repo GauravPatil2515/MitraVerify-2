@@ -7,7 +7,7 @@
     "mitraverify-frontend"
   ],
   "scripts": {
-    "build": "cd mitraverify-frontend && npm install --legacy-peer-deps && npm run build",
+    "build": "cd mitraverify-frontend && npm install --legacy-peer-deps --no-package-lock && npm run build",
     "dev": "cd mitraverify-frontend && npm run dev",
     "start": "cd mitraverify-frontend && npm start",
     "render-build": "chmod +x render-build.sh && ./render-build.sh"
@@ -16,6 +16,7 @@
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
   },
+  "packageManager": "npm@9.8.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/GauravPatil2515/MitraVerify-2.git"

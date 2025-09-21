@@ -2,12 +2,12 @@ name: Deploy to Netlify
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
     paths:
       - 'mitraverify-frontend/**'
       - '.github/workflows/netlify-deploy.yml'
   pull_request:
-    branches: [ main ]
+    branches: [main]
     paths:
       - 'mitraverify-frontend/**'
 

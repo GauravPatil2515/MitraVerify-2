@@ -4,8 +4,8 @@
     "private": true,
     "scripts": {
         "dev": "next dev --turbopack",
-        "build": "next build && next export",
-        "build:netlify": "npm install --legacy-peer-deps && next build && next export",
+        "build": "next build",
+        "build:netlify": "npm install --legacy-peer-deps && next build",
         "start": "next start",
         "lint": "next lint",
         "lint:fix": "next lint --fix",

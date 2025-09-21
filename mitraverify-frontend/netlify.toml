@@ -1,6 +1,6 @@
 [build]
   # Build configuration for Netlify
-  publish = ".next"
+  publish = "out"
   command = "npm run build"
 
 [build.environment]
@@ -17,10 +17,10 @@
   # Local development configuration
   command = "npm run dev"
   port = 3000
-  publish = ".next"
+  publish = "out"
 
 [[redirects]]
-  # Handle Next.js dynamic routes
+  # Handle Next.js dynamic routes and SPA routing
   from = "/*"
   to = "/index.html"
   status = 200
@@ -31,7 +31,7 @@
   to = "http://localhost:8000/api/:splat"
   status = 200
   force = false
-  condition = "Country=dev"
+  conditions = {Country = ["dev"]}
 
 # Headers for security and performance
 [[headers]]
@@ -76,12 +76,12 @@
 # Environment-specific settings
 [context.production]
   command = "npm run build"
-  publish = ".next"
+  publish = "out"
 
 [context.deploy-preview]
   command = "npm run build"
-  publish = ".next"
+  publish = "out"
 
 [context.branch-deploy]
   command = "npm run build"
-  publish = ".next"
+  publish = "out"

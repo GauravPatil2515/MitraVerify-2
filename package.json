@@ -7,9 +7,10 @@
     "mitraverify-frontend"
   ],
   "scripts": {
-    "build": "cd mitraverify-frontend && npm ci && npm run build",
+    "build": "cd mitraverify-frontend && npm install --legacy-peer-deps && npm run build",
     "dev": "cd mitraverify-frontend && npm run dev",
-    "start": "cd mitraverify-frontend && npm start"
+    "start": "cd mitraverify-frontend && npm start",
+    "render-build": "chmod +x render-build.sh && ./render-build.sh"
   },
   "engines": {
     "node": ">=18.0.0",

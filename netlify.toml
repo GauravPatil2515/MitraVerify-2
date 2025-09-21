@@ -1,29 +1,56 @@
-[build]
-  # Explicitly set base directory to frontend
-  base = "mitraverify-frontend"
-  # Publish directory relative to base
-  publish = "out"
-  # Build command to run from the base directory
-  command = "npm ci && npm run build"
-  # Ignore backend directory completely
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF MitraVerify-Backend/"
+# Netlify Build Configuration
+# This file forces Node.js builds and prevents Docker detection
 
+[build]
+  # CRITICAL: Force Node.js build environment
+  command = "cd mitraverify-frontend && npm ci && npm run build"
+  publish = "mitraverify-frontend/out"
+  base = "."
+  
 [build.environment]
-  # Node.js version - force specific version
+  # Force specific Node.js version
   NODE_VERSION = "18.17.0"
-  # NPM configuration
-  NPM_FLAGS = "--legacy-peer-deps"
-  # Force Node.js build environment
+  # Disable all non-Node.js build systems
   NETLIFY_USE_YARN = "false"
   NETLIFY_USE_PNPM = "false"
   # Explicitly disable Docker
   DOCKER_ENABLED = "false"
-  # Force buildpack detection
   BUILDPACK_URL = "https://github.com/heroku/heroku-buildpack-nodejs"
+  # Force npm
+  NPM_FLAGS = "--legacy-peer-deps"
 
-# Force Node.js build over Docker
-[build.processing]
-  skip_processing = false
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[dev]
+  command = "cd mitraverify-frontend && npm run dev"
+  port = 3000
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Context-specific builds (all identical to force consistency)
+[context.production]
+  command = "cd mitraverify-frontend && npm ci && npm run build"
+  publish = "mitraverify-frontend/out"
+
+[context.deploy-preview]
+  command = "cd mitraverify-frontend && npm ci && npm run build"
+  publish = "mitraverify-frontend/out"
+
+[context.branch-deploy]
+  command = "cd mitraverify-frontend && npm ci && npm run build"
+  publish = "mitraverify-frontend/out"
+
+# Headers for security and performance
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
 
 [[plugins]]
   # Essential Next.js plugin for Netlify

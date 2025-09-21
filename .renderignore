@@ -1,0 +1,6 @@
+# Ignore backend directory for frontend static site deployment
+MitraVerify-Backend/
+*.dockerfile
+Dockerfile*
+docker-compose*
+.docker*

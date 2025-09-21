@@ -1,19 +1,28 @@
 services:
-  # Frontend Static Site
+  # Frontend Static Site - EXPLICIT CONFIGURATION
   - type: web
     name: mitraverify-frontend
     env: static
+    region: oregon
+    plan: free
     buildCommand: cd mitraverify-frontend && npm install --legacy-peer-deps && npm run build
     staticPublishPath: mitraverify-frontend/out
+    pullRequestPreviewsEnabled: true
+    rootDir: mitraverify-frontend
+    buildFilter:
+      paths:
+        - mitraverify-frontend/**
     routes:
       - type: rewrite
         source: /*
         destination: /index.html
     envVars:
       - key: NODE_VERSION
-        value: 18.17.0
+        value: "18.17.0"
       - key: NPM_CONFIG_LEGACY_PEER_DEPS
-        value: true
+        value: "true"
+      - key: BUILD_COMMAND
+        value: "npm install --legacy-peer-deps && npm run build"
     headers:
       - path: /*
         name: X-Frame-Options
@@ -30,15 +39,3 @@ services:
       - path: /*.css
         name: Cache-Control
         value: "public, max-age=31536000, immutable"
-
-  # Backend API (optional - uncomment when ready to deploy backend)
-  # - type: web
-  #   name: mitraverify-backend
-  #   env: python
-  #   buildCommand: cd MitraVerify-Backend && pip install -r requirements.txt
-  #   startCommand: cd MitraVerify-Backend && python -m uvicorn src.api.main:app --host 0.0.0.0 --port $PORT
-  #   envVars:
-  #     - key: PYTHON_VERSION
-  #       value: 3.11
-  #     - key: ENVIRONMENT
-  #       value: production

@@ -1,0 +1,11 @@
+# *
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api
+
+# Host
+Host: https://mitraverify.netlify.app
+
+# Sitemaps
+Sitemap: https://mitraverify.netlify.app/sitemap.xml

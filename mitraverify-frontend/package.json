@@ -4,9 +4,15 @@
     "private": true,
     "scripts": {
         "dev": "next dev --turbopack",
-        "build": "next build",
+        "build": "next build && next export",
+        "build:netlify": "npm install --legacy-peer-deps && next build && next export",
         "start": "next start",
-        "lint": "next lint"
+        "lint": "next lint",
+        "lint:fix": "next lint --fix",
+        "type-check": "tsc --noEmit",
+        "analyze": "cross-env ANALYZE=true next build",
+        "clean": "rimraf .next out",
+        "postbuild": "next-sitemap"
     },
     "dependencies": {
         "@babel/parser": "^7.28.4",
@@ -100,14 +106,18 @@
     },
     "devDependencies": {
         "@eslint/eslintrc": "^3.3.1",
+        "@netlify/plugin-nextjs": "^5.7.2",
         "@tailwindcss/postcss": "^4",
         "@types/node": "^20",
         "@types/react": "^19",
         "@types/react-dom": "^19",
         "@types/react-syntax-highlighter": "^15.5.13",
         "@types/three": "^0.178.0",
+        "cross-env": "^7.0.3",
         "eslint": "^9.35.0",
         "eslint-config-next": "^15.5.3",
+        "next-sitemap": "^4.2.3",
+        "rimraf": "^6.0.1",
         "tailwindcss": "^4",
         "tw-animate-css": "^1.3.8",
         "typescript": "^5"

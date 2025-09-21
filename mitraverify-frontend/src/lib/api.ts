@@ -3,7 +3,23 @@
  * Handles communication with the backend API
  */
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+// Environment-aware API URL configuration
+const getApiBaseUrl = (): string => {
+  // Check if we're in production
+  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+    // Production environment - use environment variable or fallback
+    return process.env.NEXT_PUBLIC_API_URL || 'https://your-backend-api.herokuapp.com';
+  }
+  
+  // Development environment
+  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+};
+
+const API_BASE_URL = getApiBaseUrl();
+
+// Request timeout configuration
+const REQUEST_TIMEOUT = parseInt(process.env.NEXT_PUBLIC_API_TIMEOUT || '30000');
+const MAX_FILE_SIZE = parseInt(process.env.NEXT_PUBLIC_MAX_FILE_SIZE || '10485760'); // 10MB
 
 export interface VerificationResult {
   overall_verdict: string;
@@ -51,11 +67,52 @@ class MitraVerifyAPI {
   }
 
   /**
+   * Make a request with timeout and retry logic
+   */
+  private async makeRequest(url: string, options: RequestInit = {}): Promise<Response> {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+
+    try {
+      const response = await fetch(url, {
+        ...options,
+        signal: controller.signal,
+        headers: {
+          'Accept': 'application/json',
+          ...options.headers,
+        },
+      });
+      clearTimeout(timeoutId);
+      return response;
+    } catch (error) {
+      clearTimeout(timeoutId);
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new Error(`Request timeout after ${REQUEST_TIMEOUT / 1000} seconds`);
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Validate file size before upload
+   */
+  private validateFile(file: File): void {
+    if (file.size > MAX_FILE_SIZE) {
+      throw new Error(`File size exceeds ${MAX_FILE_SIZE / 1024 / 1024}MB limit`);
+    }
+    
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      throw new Error('Unsupported file type. Please use JPEG, PNG, GIF, or WebP images.');
+    }
+  }
+
+  /**
    * Check if the API is healthy
    */
   async healthCheck(): Promise<{ status: string; version: string }> {
     try {
-      const response = await fetch(`${this.baseUrl}/health`);
+      const response = await this.makeRequest(`${this.baseUrl}/health`);
       if (!response.ok) {
         throw new Error(`Health check failed: ${response.status}`);
       }
@@ -71,10 +128,14 @@ class MitraVerifyAPI {
    */
   async verifyText(text: string): Promise<VerificationResult> {
     try {
-      const formData = new FormData();
-      formData.append('text', text);
+      if (!text || text.trim().length === 0) {
+        throw new Error('Text content cannot be empty');
+      }
 
-      const response = await fetch(`${this.baseUrl}/api/v1/verify/text`, {
+      const formData = new FormData();
+      formData.append('text', text.trim());
+
+      const response = await this.makeRequest(`${this.baseUrl}/api/v1/verify/text`, {
         method: 'POST',
         body: formData,
       });
@@ -96,10 +157,12 @@ class MitraVerifyAPI {
    */
   async verifyImage(file: File): Promise<VerificationResult> {
     try {
+      this.validateFile(file);
+
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch(`${this.baseUrl}/api/v1/verify/image`, {
+      const response = await this.makeRequest(`${this.baseUrl}/api/v1/verify/image`, {
         method: 'POST',
         body: formData,
       });
@@ -125,15 +188,23 @@ class MitraVerifyAPI {
         throw new Error('Either text or file must be provided');
       }
 
+      if (text && text.trim().length === 0) {
+        text = undefined;
+      }
+
+      if (file) {
+        this.validateFile(file);
+      }
+
       const formData = new FormData();
       if (text) {
-        formData.append('text', text);
+        formData.append('text', text.trim());
       }
       if (file) {
         formData.append('file', file);
       }
 
-      const response = await fetch(`${this.baseUrl}/api/v1/verify`, {
+      const response = await this.makeRequest(`${this.baseUrl}/api/v1/verify`, {
         method: 'POST',
         body: formData,
       });
@@ -164,7 +235,7 @@ class MitraVerifyAPI {
     };
   }> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/v1/stats`);
+      const response = await this.makeRequest(`${this.baseUrl}/api/v1/stats`);
       if (!response.ok) {
         throw new Error(`Stats request failed: ${response.status}`);
       }

@@ -1,0 +1,3 @@
+# Ignore everything for Netlify (we want Node.js builds, not Docker)
+*
+!mitraverify-frontend/

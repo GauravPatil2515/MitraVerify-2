@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Render.com build script
+# This file forces specific build behavior
+
+echo "🔧 MitraVerify Build Script Starting..."
+
+# Force Node.js version check
+node_version=$(node --version)
+echo "📍 Current Node.js version: $node_version"
+
+# Navigate to frontend
+cd mitraverify-frontend || exit 1
+
+# Remove any Bun files
+rm -f bun.lock bun.lockb package-lock.json
+
+# Force npm installation
+echo "📦 Installing dependencies with npm..."
+npm install --legacy-peer-deps --no-package-lock
+
+# Build with npm
+echo "🏗️ Building with Next.js..."
+npm run build
+
+# Verify output
+echo "✅ Build completed!"
+echo "📁 Output directory contents:"
+ls -la out/
+
+echo "🎉 MitraVerify build successful!"

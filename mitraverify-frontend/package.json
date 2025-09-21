@@ -5,7 +5,6 @@
     "scripts": {
         "dev": "next dev --turbopack",
         "build": "next build",
-        "build:netlify": "npm install --legacy-peer-deps && next build",
         "start": "next start",
         "lint": "next lint",
         "lint:fix": "next lint --fix",
@@ -106,7 +105,6 @@
     },
     "devDependencies": {
         "@eslint/eslintrc": "^3.3.1",
-        "@netlify/plugin-nextjs": "^5.7.2",
         "@tailwindcss/postcss": "^4",
         "@types/d3-array": "^3.2.2",
         "@types/d3-color": "^3.1.3",
